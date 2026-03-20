@@ -98,3 +98,32 @@ resource "aws_route" "public" {
   destination_cidr_block    = "0.0.0.0/0"
   gateway_id = aws_internet_gateway.igw.id
 }
+
+resource "aws_eip" "main" {
+  domain   = "vpc"
+
+  tags = merge(
+    local.common_tags, 
+    { 
+        Name = "${var.project}-${var.env}-nat"
+    },
+    var.eip_tags
+    ) 
+}
+
+resource "aws_nat_gateway" "main" {
+  allocation_id = aws_eip.main.id
+  subnet_id     = aws_subnet.public[0].id
+
+  tags = merge(
+    local.common_tags, 
+    { 
+        Name = "${var.project}-${var.env}-ngw"
+    },
+    var.ngw_tags
+    ) 
+
+  # Ensures that the Internet Gateway is created first
+  # Without IGW, NAT Gateway won’t work properly
+  depends_on = [aws_internet_gateway.igw]
+}

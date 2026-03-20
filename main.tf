@@ -56,3 +56,39 @@ resource "aws_subnet" "database" {
     var.database_subnet_tags
     ) 
 }
+
+resource "aws_route_table" "public" {
+  vpc_id = aws_vpc.main.id
+
+  tags = merge(
+    local.common_tags, 
+    { 
+        Name = "${var.project}-${var.env}-public"
+    },
+    var.public_route_table_tags
+    ) 
+}
+
+resource "aws_route_table" "private" {
+  vpc_id = aws_vpc.main.id
+
+  tags = merge(
+    local.common_tags, 
+    { 
+        Name = "${var.project}-${var.env}-private"
+    },
+    var.private_route_table_tags
+    ) 
+}
+
+resource "aws_route_table" "database" {
+  vpc_id = aws_vpc.main.id
+
+  tags = merge(
+    local.common_tags, 
+    { 
+        Name = "${var.project}-${var.env}-database"
+    },
+    var.database_route_table_tags
+    ) 
+}

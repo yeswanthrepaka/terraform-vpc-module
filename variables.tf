@@ -74,3 +74,12 @@ variable "ngw_tags" {
   type = map
   default = {}
 }
+
+variable "is_peering_required" {
+   type = bool
+   default = false
+}
+
+variable "peer_owner_id" {
+   type = string
+}
